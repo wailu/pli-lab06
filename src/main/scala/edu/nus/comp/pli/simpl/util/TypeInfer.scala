@@ -92,9 +92,9 @@ object TypeInfer {
           val at1 = type_infer(env, condition)
           val at2 = type_infer(env, consequent)
           val at3 = type_infer(env, alternative)
+
           (at1, at2, at3) match {
-            case (Some(TypeBool), Some(TypeBool), Some(TypeBool)) => at2
-            case (Some(TypeBool), Some(TypeInt), Some(TypeInt)) => at2
+            case (Some(TypeBool), Some(t1), Some(t2)) => if (testTwoTypes(t1, t2)) Some(t1) else None
             case _ => None
           }
         }
@@ -147,6 +147,8 @@ object TypeInfer {
               case _ => None
             }
           }
+
+          println(type_infer(env, func))
 
           type_infer(env, func).flatMap(check_consistent(_, actualArgs))
         }
