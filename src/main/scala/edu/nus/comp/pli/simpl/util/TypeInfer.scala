@@ -116,7 +116,7 @@ object TypeInfer {
           }
       }
 
-        case RecFunc(te, name, formalArgs, body) =>
+        case RecFunc(te, name, formalArgs, body) => {
           /*
           (* te is the inferred function type *)
           (* infer the types of args and body *)
@@ -124,7 +124,14 @@ object TypeInfer {
           (* extend the env when checking type of body *)
            */
           // add you code here
-          None
+          val new_env = extr_arg_type(te, formalArgs).map(x => x._1 ++ env).map(x => x :+ (name, te))
+          println(new_env)
+
+          extr_arg_type(te, formalArgs)  match {
+            case Some((e, t)) => if (type_infer(new_env.get, body).map(x => testTwoTypes(x, t)).getOrElse(false)) Some(te) else None
+            case _ => None
+          }
+        }
 
         case Appln(func, actualArgs) =>
           /*
