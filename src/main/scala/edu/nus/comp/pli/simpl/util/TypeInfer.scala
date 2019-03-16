@@ -38,7 +38,7 @@ object TypeInfer {
       expr match {
         case Num(_) => Some(TypeInt)
         case Bool(_) => Some(TypeInt)
-        case Var(name) => get_type (env, Var(name))
+        case Var(name) => get_type(env, Var(name))
 
         case Bin(op, leftExpr, rightExpr) =>
           op match {
@@ -49,7 +49,7 @@ object TypeInfer {
                 case (Some(TypeInt), Some(TypeInt)) => Some(TypeInt)
                 case _ => None
               }
-            case Lt| Gt | Eq|NEq| Gte|Lte =>
+            case Lt | Gt | Eq | NEq | Gte | Lte =>
               val at1 = type_infer(env, leftExpr)
               val at2 = type_infer(env, rightExpr)
               (at1, at2) match {
@@ -83,13 +83,21 @@ object TypeInfer {
             case _ => None
           }
 
-        case Cond(condition, consequent, alternative) =>
+        case Cond(condition, consequent, alternative) => {
           /*
            * condition must be bool type
            * consequent,alternative must be of the same inferred type
            */
           // add you code here
-          None
+          val at1 = type_infer(env, condition)
+          val at2 = type_infer(env, consequent)
+          val at3 = type_infer(env, alternative)
+          (at1, at2, at3) match {
+            case (Some(TypeBool), Some(TypeBool), Some(TypeBool)) => at2
+            case (Some(TypeBool), Some(TypeInt), Some(TypeInt)) => at2
+            case _ => None
+          }
+      }
 
 
         case Func(te, formalArgs, body) =>
