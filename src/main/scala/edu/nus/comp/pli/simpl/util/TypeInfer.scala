@@ -125,7 +125,6 @@ object TypeInfer {
            */
           // add you code here
           val new_env = extr_arg_type(te, formalArgs).map(x => x._1 ++ env).map(x => x :+ (name, te))
-          println(new_env)
 
           extr_arg_type(te, formalArgs)  match {
             case Some((e, t)) => if (type_infer(new_env.get, body).map(x => testTwoTypes(x, t)).getOrElse(false)) Some(te) else None
@@ -133,7 +132,7 @@ object TypeInfer {
           }
         }
 
-        case Appln(func, actualArgs) =>
+        case Appln(func, actualArgs) => {
           /*
           (* infer the type of e1 first *)
           (* infer the types of args *)
@@ -141,7 +140,16 @@ object TypeInfer {
           (* remember to update _ with inferred type of e1 *)
            */
           // add you code here
-          None
+          def check_consistent(te: Type, args: Seq[Expression]): Option[Type] = {
+            (te, args) match {
+              case (Arrow(from, to), h :: rest) => if (type_infer(env, h).map(testTwoTypes(from, _)).exists(_ => true)) check_consistent(to, rest) else None
+              case (t, Nil) => Some(t)
+              case _ => None
+            }
+          }
+
+          type_infer(env, func).flatMap(check_consistent(_, actualArgs))
+        }
 
 
         case Let(ldecl,te,body) =>
