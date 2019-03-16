@@ -37,7 +37,7 @@ object TypeInfer {
 
       expr match {
         case Num(_) => Some(TypeInt)
-        case Bool(_) => Some(TypeInt)
+        case Bool(_) => Some(TypeBool)
         case Var(name) => get_type(env, Var(name))
 
         case Bin(op, leftExpr, rightExpr) =>
@@ -97,10 +97,10 @@ object TypeInfer {
             case (Some(TypeBool), Some(TypeInt), Some(TypeInt)) => at2
             case _ => None
           }
-      }
+        }
 
 
-        case Func(te, formalArgs, body) =>
+        case Func(te, formalArgs, body) => {
           /*
           (* te is the inferred function type *)
           (* infer the types of args and body *)
@@ -108,7 +108,13 @@ object TypeInfer {
           (* extend the env when checking type of body *)
            */
           // add you code here
-          None
+          val new_env = extr_arg_type(te, formalArgs).map(x => x._1 ++ env)
+
+          extr_arg_type(te, formalArgs) match {
+            case Some((e, t)) => if (type_infer(new_env.get, body).map(x => testTwoTypes(x, t)).exists(_ => true)) Some(te) else None
+            case _ => None
+          }
+      }
 
         case RecFunc(te, name, formalArgs, body) =>
           /*
