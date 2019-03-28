@@ -97,7 +97,26 @@ object SimplEplDenotationalSemantics {
 
     case RecFunc(t,f,vs,body) =>
       // add you code here
-      (Seq(),Seq())
+      val l_fn = fresh_labal()
+      val fvs = fv(expr)
+      val all_vs = (f +: fvs.toList) ++ vs
+      val new_ce = enum_cenv(all_vs, 0)
+      val arity = vs.length
+      val (s1, p1) = compileHelper(new_ce, body)
+      val fvs_n = fvs.map(
+        (ele: Var) => ele match {
+          case Var(name) => get_val(new_ce, name) match {
+            case Some(i) => (name, i)
+            case None => (name, -1)
+          }
+        }
+      )
+      val f_n = get_val(new_ce, f.name) match {
+        case Some(i) => (f.name, i)
+        case None => (f.name, -1)
+      }
+
+      (Seq(LDFR(fvs_n.toList,f_n,arity,l_fn)), (LABEL(l_fn)+:s1)++Seq(RTN)++p1)
 
     case Appln(f,args) =>
       // add you code here
