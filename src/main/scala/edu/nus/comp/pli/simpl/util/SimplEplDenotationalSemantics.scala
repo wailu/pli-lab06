@@ -87,7 +87,13 @@ object SimplEplDenotationalSemantics {
 
     case Cond(condition, consequent, alternative) =>
       // add you code here
-      (Seq(),Seq())
+      val l_fn_1 = fresh_labal()
+      val l_fn_2 = fresh_labal()
+      val (s1, p1) = compileHelper(ce, condition)
+      val (s2, p2) = compileHelper(ce, consequent)
+      val (s3, p3) = compileHelper(ce, alternative)
+
+      ((((s1 :+ JOF(l_fn_1)) ++ s2 :+ GOTO(l_fn_2)) :+ LABEL(l_fn_1)) ++ s3 :+ LABEL(l_fn_2), p1 ++ p2 ++ p3)
 
     case RecFunc(t,f,vs,body) =>
       // add you code here
