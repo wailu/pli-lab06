@@ -39,10 +39,10 @@ object SimplEplDenotationalSemantics {
     case Minus => NEG
   }
 
-  private def  enum_cenv (xss:Set[Var], nn:Int):Seq[(Var,Int)] ={
-    def aux (xs:Set[Var], n:Int):Seq[(Var,Int)] = xs.toList match {
+  private def  enum_cenv (xss:List[Var], nn:Int):Seq[(Var,Int)] ={
+    def aux (xs:List[Var], n:Int):Seq[(Var,Int)] = xs match {
       case Nil => Seq()
-      case head :: rest => (head,n) +: aux (rest.toSet, n+1)
+      case head :: rest => (head,n) +: aux (rest, n+1)
     }
     aux (xss,nn)
   }
@@ -71,7 +71,7 @@ object SimplEplDenotationalSemantics {
       val l_fn = fresh_labal()
       val fvs = fv (expr)
       val all_vs = fvs ++ vs
-      val new_ce = enum_cenv (all_vs, 0)
+      val new_ce = enum_cenv (all_vs.toList, 0)
       val arity = vs.length
       val (s1,p1) = compileHelper( new_ce, body)
       val fvs_n = fvs.map(
