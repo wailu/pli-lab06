@@ -148,8 +148,6 @@ object TypeInfer {
             }
           }
 
-          println(type_infer(env, func))
-
           type_infer(env, func).flatMap(check_consistent(_, actualArgs))
         }
 
