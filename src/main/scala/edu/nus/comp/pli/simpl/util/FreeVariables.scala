@@ -26,7 +26,7 @@ object FreeVariables {
         fv(func) union actualArgs.toSet.flatMap(e => fv(e))
 
       case Let(defs, _, body) =>
-        fv(body) diff defs.map(x => x._2).toSet union (defs.flatMap(x => fv(x._3)).toSet diff defs.map(x => x._2).toSet)
+        fv(body) diff defs.map(x => x._2).toSet union defs.flatMap(x => fv(x._3)).toSet
     }
   }
 }
