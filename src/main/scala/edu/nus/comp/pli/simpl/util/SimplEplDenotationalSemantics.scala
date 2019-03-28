@@ -101,7 +101,12 @@ object SimplEplDenotationalSemantics {
 
     case Appln(f,args) =>
       // add you code here
-      (Seq(),Seq())
+      val arity = args.length
+      val (s0, p0) = compileHelper(ce, f)
+      val partial = args.map(x => compileHelper(ce, x))
+      val s: Seq[SimInstruction] = partial.reverse.flatMap(x => x._1)
+      val p: Seq[SimInstruction] = partial.flatMap(x => x._2)
+      (s ++ s0 :+ CALL(arity), p0 ++ p)
   }
 
 
