@@ -1,8 +1,8 @@
 package edu.nus.comp.pli.simpl.util
 
-import edu.nus.comp.pli.simpl.util.SimplEvmInstruction._
-import edu.nus.comp.pli.simpl.util.FreeVariables._
 import edu.nus.comp.pli.simpl.parser.SimplAST._
+import edu.nus.comp.pli.simpl.util.FreeVariables._
+import edu.nus.comp.pli.simpl.util.SimplEvmInstruction._
 
 
 object SimplEplDenotationalSemantics {

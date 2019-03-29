@@ -1,15 +1,10 @@
 package edu.nus.comp.pli.simpl.parser
 
-import org.antlr.v4.runtime.{ANTLRInputStream, CommonTokenStream, ParserRuleContext}
-import edu.nus.comp.pli.epl.parser.SimplParserParser.{ ExprContext => ASTNode}
-import edu.nus.comp.pli.epl.parser.SimplParserParser.{TypeContext => TYPENode}
-
-import SimplAST._
-import org.antlr.v4.runtime.tree.ParseTree
+import edu.nus.comp.pli.epl.parser.SimplParserParser.{ExprContext => ASTNode, TypeContext => TYPENode}
 import edu.nus.comp.pli.epl.parser.{SimplParserLexer, SimplParserParser}
-import org.antlr.v4.runtime.tree.TerminalNode
-
-import collection.JavaConverters._
+import edu.nus.comp.pli.simpl.parser.SimplAST._
+import org.antlr.v4.runtime.tree.{ParseTree, TerminalNode}
+import org.antlr.v4.runtime.{ANTLRInputStream, CommonTokenStream, ParserRuleContext}
 
 object SimplParser {
 

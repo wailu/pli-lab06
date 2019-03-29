@@ -1,8 +1,8 @@
 package edu.nus.comp.pli.simpl.parser
 
+import edu.nus.comp.pli.simpl.parser.SimplAST._
+import edu.nus.comp.pli.simpl.parser.SimplParser._
 import org.scalatest.FlatSpec
-import SimplParser._
-import SimplAST._
 
 import scala.io.Source
 

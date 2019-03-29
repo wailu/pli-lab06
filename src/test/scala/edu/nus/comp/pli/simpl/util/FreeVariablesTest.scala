@@ -1,10 +1,9 @@
 package edu.nus.comp.pli.simpl.util
 
-import org.scalatest.FlatSpec
-import FreeVariables._
 import edu.nus.comp.pli.simpl.parser.SimplAST._
 import edu.nus.comp.pli.simpl.parser.SimplParser._
-
+import edu.nus.comp.pli.simpl.util.FreeVariables._
+import org.scalatest.FlatSpec
 
 import scala.io.Source
 
