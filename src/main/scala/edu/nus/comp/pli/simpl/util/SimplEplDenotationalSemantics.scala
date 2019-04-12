@@ -13,6 +13,12 @@ object SimplEplDenotationalSemantics {
     "labal_"+ labal_index
   }
 
+  def tail_call_op(main_code: Seq[SimInstruction]): Seq[SimInstruction] = main_code match {
+    case CALL(n) :: RTN :: rest => TAILCALL(n) +: tail_call_op(rest)
+    case instr :: rest => instr +: tail_call_op(rest)
+    case Nil => Seq()
+  }
+
   private def get_val (ce:Seq[(Var,Int)], s:String) :Option[Int] = ce match{
     case Seq() => None
     case head::rest => head match{
@@ -137,11 +143,7 @@ object SimplEplDenotationalSemantics {
 
   }
 
-  def tail_call_op(main_code: Seq[SimInstruction]): Seq[SimInstruction] = main_code match {
-    case CALL(n) :: RTN :: rest => TAILCALL(n) +: tail_call_op(rest)
-    case instr :: rest => instr +: tail_call_op(rest)
-    case Nil => Seq()
-  }
+
 
   private def trans_exp (e:Expression) :Expression = e match{
     case Num(i) => Num(i)
