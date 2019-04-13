@@ -23,6 +23,9 @@ class TailRecursionTest extends FlatSpec {
     )
   }
   "test32.simpl" should "have tailcall optimisation for else case" in {
+    // an if-else case might have an opportunity for tailcall optimisation, if the branches are function applications
+    // the current tail_call_op includes tailcall optimisation for the else case, by searching for
+    // CALL(n) :: LABEL(x) :: RTN
     val source = Source.fromURL(getClass.getResource("/simpl/test32.simpl")).mkString
     assert(
       type_infer(Seq(),parse(source)) match{
@@ -32,7 +35,7 @@ class TailRecursionTest extends FlatSpec {
         case Some (t) =>
           println(compile(parse(source)))
           compile(parse(source)) ==
-            List(LDCB(true), JOF("labal_0"), LDCI(1), LDF(Vector(),1,"labal_2"), CALL(1), GOTO("labal_1"), LABEL("labal_0"), LDCI(1), LDF(Vector(),1,"labal_3"), TAILCALL(1), LABEL("labal_1"), DONE, LABEL("labal_2"), LD(("x",0)), RTN, LABEL("labal_3"), LD(("x",0)), LDCI(1), PLUS, RTN)
+            List(LDCB(true), JOF("labal_0"), LDCI(1), LDF(Vector(),1,"labal_2"), CALL(1), GOTO("labal_1"), LABEL("labal_0"), LDCI(1), LDF(Vector(),1,"labal_3"), CALL(1), LABEL("labal_1"), DONE, LABEL("labal_2"), LD(("x",0)), RTN, LABEL("labal_3"), LD(("x",0)), LDCI(1), PLUS, RTN)
       }
     )
   }

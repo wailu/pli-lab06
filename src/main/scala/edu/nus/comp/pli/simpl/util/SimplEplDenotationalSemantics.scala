@@ -15,7 +15,7 @@ object SimplEplDenotationalSemantics {
 
   def tail_call_op(main_code: Seq[SimInstruction]): Seq[SimInstruction] = main_code match {
     case CALL(n) :: RTN :: rest => TAILCALL(n) +: tail_call_op(rest)
-    case CALL(n) :: LABEL(x) :: rest => TAILCALL(n) +: (LABEL(x) +: tail_call_op(rest))
+    case CALL(n) :: LABEL(x) :: RTN :: rest => TAILCALL(n) +: LABEL(x) +: RTN +: tail_call_op(rest)
     case instr :: rest => instr +: tail_call_op(rest)
     case Nil => Seq()
   }
