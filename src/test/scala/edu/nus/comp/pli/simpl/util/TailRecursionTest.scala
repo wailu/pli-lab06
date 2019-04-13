@@ -9,15 +9,30 @@ import org.scalatest.FlatSpec
 import scala.io.Source
 
 class TailRecursionTest extends FlatSpec {
-  "test31.simpl" should "have TAILCALL instruction instead of CALL + RTN" in {
-    val source = 
+  "test31.simpl" should "have tailcall optimisation" in {
+    val source = Source.fromURL(getClass.getResource("/simpl/test31.simpl")).mkString
     assert(
       type_infer(Seq(),parse(source)) match{
         case None =>
           print ("type inference error")
           false
-        case Some (t) => compile(parse(source)) ==
-          List(LDFR(List(),("recurse",0),4,"labal_0"), DONE, LABEL("labal_0"), LD(("y",2)), LDCI(0), EQ, JOF("labal_1"), LD(("iv",4)), GOTO("labal_2"), LABEL("labal_1"), LD(("iv",4)), LD(("op",3)), LD(("y",2)), LDCI(1), MINUS, LD(("x",1)), LD(("recurse",0)), CALL(4), LD(("x",1)), LD(("op",3)), TAILCALL(2), LABEL("labal_2"), RTN)
+        case Some (t) =>
+          compile(parse(source)) ==
+            List(LDCI(1), LDFR(List(),("f",0),1,"labal_0"), CALL(1), DONE, LABEL("labal_0"), LD(("n",1)), LD(("f",0)), TAILCALL(1))
+      }
+    )
+  }
+  "test32.simpl" should "have tailcall optimisation for else case" in {
+    val source = Source.fromURL(getClass.getResource("/simpl/test32.simpl")).mkString
+    assert(
+      type_infer(Seq(),parse(source)) match{
+        case None =>
+          print ("type inference error")
+          false
+        case Some (t) =>
+          println(compile(parse(source)))
+          compile(parse(source)) ==
+            List(LDCB(true), JOF("labal_0"), LDCI(1), LDF(Vector(),1,"labal_2"), CALL(1), GOTO("labal_1"), LABEL("labal_0"), LDCI(1), LDF(Vector(),1,"labal_3"), TAILCALL(1), LABEL("labal_1"), DONE, LABEL("labal_2"), LD(("x",0)), RTN, LABEL("labal_3"), LD(("x",0)), LDCI(1), PLUS, RTN)
       }
     )
   }
@@ -28,7 +43,8 @@ class TailRecursionTest extends FlatSpec {
         case None =>
           print ("type inference error")
           false
-        case Some (t) => compile(parse(source)) ==
+        case Some (t) =>
+          compile(parse(source)) ==
           List(LDFR(List(),("recurse",0),4,"labal_0"), DONE, LABEL("labal_0"), LD(("y",2)), LDCI(0), EQ, JOF("labal_1"), LD(("iv",4)), GOTO("labal_2"), LABEL("labal_1"), LD(("iv",4)), LD(("op",3)), LD(("y",2)), LDCI(1), MINUS, LD(("x",1)), LD(("recurse",0)), CALL(4), LD(("x",1)), LD(("op",3)), TAILCALL(2), LABEL("labal_2"), RTN)
       }
     )
