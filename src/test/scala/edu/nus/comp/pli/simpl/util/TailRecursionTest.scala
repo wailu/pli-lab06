@@ -22,10 +22,7 @@ class TailRecursionTest extends FlatSpec {
       }
     )
   }
-  "test32.simpl" should "have tailcall optimisation for else case" in {
-    // an if-else case might have an opportunity for tailcall optimisation, if the branches are function applications
-    // the current tail_call_op includes tailcall optimisation for the else case, by searching for
-    // CALL(n) :: LABEL(x) :: RTN
+  "test32.simpl" should "have not have tailcall optimisation" in {
     val source = Source.fromURL(getClass.getResource("/simpl/test32.simpl")).mkString
     assert(
       type_infer(Seq(),parse(source)) match{
@@ -39,6 +36,23 @@ class TailRecursionTest extends FlatSpec {
       }
     )
   }
+  "test33.simpl" should "have have tailcall optimisation" in {
+    // an if-else case might have an opportunity for tailcall optimisation, if the branches are function applications
+    // the current tail_call_op includes tailcall optimisation for the else (but not the if) case, by searching for
+    // CALL(n) :: LABEL(x) :: RTN
+    val source = Source.fromURL(getClass.getResource("/simpl/test33.simpl")).mkString
+    assert(
+      type_infer(Seq(),parse(source)) match{
+        case None =>
+          print ("type inference error")
+          false
+        case Some (t) =>
+          println(compile(parse(source)))
+          compile(parse(source)) ==
+            List(LDFR(List(),("factorial",0),1,"labal_0"), DONE, LABEL("labal_0"), LD(("n",1)), LDCI(0), EQ, JOF("labal_1"), LDCI(1), GOTO("labal_2"), LABEL("labal_1"), LD(("n",1)), LDCI(1), MINUS, LD(("factorial",0)), TAILCALL(1), LABEL("labal_2"), RTN)
+      }
+    )
+  }
   "test04.simpl" should "has no free variable" in {
     val source = Source.fromURL(getClass.getResource("/simpl/test04.simpl")).mkString
     assert(
@@ -48,7 +62,7 @@ class TailRecursionTest extends FlatSpec {
           false
         case Some (t) =>
           compile(parse(source)) ==
-          List(LDFR(List(),("recurse",0),4,"labal_0"), DONE, LABEL("labal_0"), LD(("y",2)), LDCI(0), EQ, JOF("labal_1"), LD(("iv",4)), GOTO("labal_2"), LABEL("labal_1"), LD(("iv",4)), LD(("op",3)), LD(("y",2)), LDCI(1), MINUS, LD(("x",1)), LD(("recurse",0)), CALL(4), LD(("x",1)), LD(("op",3)), TAILCALL(2), LABEL("labal_2"), RTN)
+            List(LDFR(List(),("recurse",0),4,"labal_0"), DONE, LABEL("labal_0"), LD(("y",2)), LDCI(0), EQ, JOF("labal_1"), LD(("iv",4)), GOTO("labal_2"), LABEL("labal_1"), LD(("iv",4)), LD(("op",3)), LD(("y",2)), LDCI(1), MINUS, LD(("x",1)), LD(("recurse",0)), CALL(4), LD(("x",1)), LD(("op",3)), TAILCALL(2), LABEL("labal_2"), RTN)
       }
     )
   }
