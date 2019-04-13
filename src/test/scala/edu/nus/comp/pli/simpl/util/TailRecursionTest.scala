@@ -10,6 +10,7 @@ import scala.io.Source
 
 class TailRecursionTest extends FlatSpec {
   "test31.simpl" should "have tailcall optimisation" in {
+    // positive example, tail call optimisation should optimise this
     val source = Source.fromURL(getClass.getResource("/simpl/test31.simpl")).mkString
     assert(
       type_infer(Seq(),parse(source)) match{
@@ -22,7 +23,8 @@ class TailRecursionTest extends FlatSpec {
       }
     )
   }
-  "test32.simpl" should "have not have tailcall optimisation" in {
+  "test32.simpl" should "not have tailcall optimisation" in {
+    // negative case, the tail call optimisation should not do anything here
     val source = Source.fromURL(getClass.getResource("/simpl/test32.simpl")).mkString
     assert(
       type_infer(Seq(),parse(source)) match{
@@ -36,7 +38,7 @@ class TailRecursionTest extends FlatSpec {
       }
     )
   }
-  "test33.simpl" should "have have tailcall optimisation" in {
+  "test33.simpl" should "have tailcall optimisation" in {
     // an if-else case might have an opportunity for tailcall optimisation, if the branches are function applications
     // the current tail_call_op includes tailcall optimisation for the else (but not the if) case, by searching for
     // CALL(n) :: LABEL(x) :: RTN
