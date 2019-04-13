@@ -9,6 +9,18 @@ import org.scalatest.FlatSpec
 import scala.io.Source
 
 class TailRecursionTest extends FlatSpec {
+  "test31.simpl" should "have TAILCALL instruction instead of CALL + RTN" in {
+    val source = 
+    assert(
+      type_infer(Seq(),parse(source)) match{
+        case None =>
+          print ("type inference error")
+          false
+        case Some (t) => compile(parse(source)) ==
+          List(LDFR(List(),("recurse",0),4,"labal_0"), DONE, LABEL("labal_0"), LD(("y",2)), LDCI(0), EQ, JOF("labal_1"), LD(("iv",4)), GOTO("labal_2"), LABEL("labal_1"), LD(("iv",4)), LD(("op",3)), LD(("y",2)), LDCI(1), MINUS, LD(("x",1)), LD(("recurse",0)), CALL(4), LD(("x",1)), LD(("op",3)), TAILCALL(2), LABEL("labal_2"), RTN)
+      }
+    )
+  }
   "test04.simpl" should "has no free variable" in {
     val source = Source.fromURL(getClass.getResource("/simpl/test04.simpl")).mkString
     assert(
