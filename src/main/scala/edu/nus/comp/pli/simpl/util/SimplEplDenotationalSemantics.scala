@@ -6,11 +6,11 @@ import edu.nus.comp.pli.simpl.util.SimplEvmInstruction._
 
 
 object SimplEplDenotationalSemantics {
-  private var labal_index = -1
+  private var label_index = -1
 
   private def fresh_labal() : String ={
-    labal_index = labal_index + 1
-    "labal_"+ labal_index
+    label_index = label_index + 1
+    "labal_"+ label_index
   }
 
   def tail_call_op(main_code: Seq[SimInstruction]): Seq[SimInstruction] = main_code match {
@@ -137,7 +137,7 @@ object SimplEplDenotationalSemantics {
 
 
   def compile(expr: Expression):Seq[SimInstruction] = {
-    labal_index = -1
+    label_index = -1
 
     val (main_code,proc_code) = compileHelper (Seq(), trans_exp(expr))
     tail_call_op(main_code) ++ (DONE +: tail_call_op(proc_code))
